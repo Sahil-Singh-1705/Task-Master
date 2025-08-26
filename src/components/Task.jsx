@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { ClipboardType } from 'lucide-react';
+
 
 const statuses = ["To Do", "In Progress", "Done"];
 const priorities = ["Low", "Medium", "High"];
@@ -334,6 +336,9 @@ const Task = () => {
           className="mb-8 space-y-4 max-w-md shadow-lg shadow-gray-400/50 bg-zinc-950 p-6 rounded-lg"
         >
           <div>
+            <div className="flex justify-center">
+            <ClipboardType size={55} className="mb-5 text-red-500"/>
+            </div>
             <label className="block mb-1 text-lg font-medium" htmlFor="title">
               Title :
             </label>
