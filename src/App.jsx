@@ -177,7 +177,7 @@ const App = () => {
          {isAuthenticated && (
            <aside className="w-60 bg-gray-900 text-white p-4 space-y-4 sticky top-0 h-screen overflow-auto">
              <div className="text-3xl font-bold mb-6 de text-red-500 hover:scale-105 flex justify-center mr-4 cursor-pointer" onClick={() => setActiveMenu('task')}>
-               Task Board {userRole === 'admin'}
+               Task Master {userRole === 'admin'}
              </div>
     
              <hr className="-mx-4 border-t border-gray-500" />
