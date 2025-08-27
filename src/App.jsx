@@ -228,7 +228,7 @@ const App = () => {
                }}
                className="flex items-center text-lg gap-2 p-2 hover:bg-gray-800 cursor-pointer hover:text-red-500 rounded"
              >
-               <Users className="mb-0.5"/> Teams
+               <Users className="mb-0.5"/> Members
              </button>
              <hr className="-mx-4 border-t border-gray-500" />
            </aside>
