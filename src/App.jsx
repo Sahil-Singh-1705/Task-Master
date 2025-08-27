@@ -5,7 +5,7 @@ import Task from "./components/Task";
 import Team from "./components/Team";
 import MemberAuth from "./Auth/MemberAuth";
 import AdminAuth from "./Auth/AdminAuth";
-import { LogOut, User, ChevronDown, Users, ClipboardList, ListTodo, CircleUserRound, Bell, } from 'lucide-react';
+import { LogOut, User, ChevronDown, Users, ClipboardList, ListTodo, CircleUserRound, Bell, Menu, X } from 'lucide-react';
 import Notify from "./Pages/Notify";
 
 const App = () => {
@@ -13,6 +13,7 @@ const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const dropdownRef = useRef(null);
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
   const [notificationCount, setNotificationCount] = useState(0);
@@ -173,30 +174,58 @@ const App = () => {
 
    return (
      <div>
-       <div className="flex min-h-screen">
+       <div className="flex min-h-screen relative">
          {isAuthenticated && (
-           <aside className="w-60 bg-gray-900 text-white p-4 space-y-4 sticky top-0 h-screen overflow-auto">
-             <div className="text-3xl font-bold mb-6 de text-red-500 hover:scale-105 flex justify-center mr-4 cursor-pointer" onClick={() => setActiveMenu('task')}>
-               Task Master {userRole === 'admin'}
+           <button 
+             className="md:hidden absolute top-4 left-4 z-10 p-2 text-white"
+             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+           >
+             <Menu />
+           </button>
+         )}
+         {isAuthenticated && (
+           <aside className={`md:w-60 bg-gray-900 text-white p-4 space-y-4 sticky top-0 h-screen overflow-auto ${isSidebarOpen ? 'fixed inset-0 z-20 w-full md:relative md:w-60 md:block' : 'hidden md:block'}`}>
+             <div className="flex justify-between items-center mb-6">
+               <div className="text-3xl font-bold de text-red-500 hover:scale-105 cursor-pointer" onClick={() => {
+                 setActiveMenu('task');
+                 setIsSidebarOpen(false);
+               }}>
+                 Task Master {userRole === 'admin'}
+               </div>
+               <button 
+                 className="md:hidden text-white p-1"
+                 onClick={() => setIsSidebarOpen(false)}
+               >
+                 <X size={24} />
+               </button>
              </div>
     
              <hr className="-mx-4 border-t border-gray-500" />
              <button
-               onClick={() => setActiveMenu('task')}
+               onClick={() => {
+                 setActiveMenu('task');
+                 setIsSidebarOpen(false);
+               }}
                className="flex items-center text-lg gap-2 p-2 hover:bg-gray-800 cursor-pointer hover:text-red-500 rounded"
              >
                <ClipboardList/> Task Management
              </button>
              <hr className="-mx-4 border-t border-gray-500" />
              <button
-               onClick={() => setActiveMenu('assign')}
+               onClick={() => {
+                 setActiveMenu('assign');
+                 setIsSidebarOpen(false);
+               }}
                className="flex items-center text-lg gap-2 p-2 hover:bg-gray-800 cursor-pointer hover:text-red-500 rounded"
              >
               <ListTodo/> Assign Task
              </button>
              <hr className="-mx-4 border-t border-gray-500" />
              <button
-               onClick={() => setActiveMenu('team')}
+               onClick={() => {
+                 setActiveMenu('team');
+                 setIsSidebarOpen(false);
+               }}
                className="flex items-center text-lg gap-2 p-2 hover:bg-gray-800 cursor-pointer hover:text-red-500 rounded"
              >
                <Users className="mb-0.5"/> Teams
@@ -205,7 +234,7 @@ const App = () => {
            </aside>
          )}
 
-         <main className="flex-1 p-6 bg-gray-700 relative flex flex-col">
+         <main className={`flex-1 p-6 bg-gray-700 relative flex flex-col ${isSidebarOpen ? 'hidden md:block' : 'block'}`}>
            {isAuthenticated && (
              <div className="flex justify-end mb-3 relative" ref={dropdownRef}>
                <button

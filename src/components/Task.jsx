@@ -333,7 +333,7 @@ const Task = () => {
       {currentUser && currentUser.role && currentUser.role.toLowerCase() === 'admin' && (
         <form
           onSubmit={handleSubmit}
-          className="mb-8 space-y-4 max-w-md shadow-lg shadow-gray-400/50 bg-zinc-950 p-6 rounded-lg"
+          className="mb-8 space-y-4 max-w-md shadow-lg shadow-gray-500/50 bg-gray-950 p-6 rounded-lg"
         >
           <div>
             <div className="flex justify-center">
