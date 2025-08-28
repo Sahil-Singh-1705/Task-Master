@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Frown } from 'lucide-react';
+import { Frown } from "lucide-react";
 
 const Assign = () => {
   const [tasks, setTasks] = useState([]);
@@ -10,20 +10,22 @@ const Assign = () => {
 
   useEffect(() => {
     const currentPath = window.location.pathname;
-    const isAdminPath = currentPath === '/admin';
-    const token = isAdminPath ? localStorage.getItem("adminToken") : localStorage.getItem("memberToken");
-    
+    const isAdminPath = currentPath === "/admin";
+    const token = isAdminPath
+      ? localStorage.getItem("adminToken")
+      : localStorage.getItem("memberToken");
+
     if (token) {
       fetch("http://localhost:3000/api/profile", {
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       })
-        .then(res => res.json())
-        .then(data => {
+        .then((res) => res.json())
+        .then((data) => {
           setCurrentUser(data);
         })
-        .catch(err => {
+        .catch((err) => {
           console.error("Error fetching user profile:", err);
         });
     }
@@ -57,11 +59,13 @@ const Assign = () => {
       alert("Selected task not found.");
       return;
     }
-    
+
     const currentPath = window.location.pathname;
-    const isAdminPath = currentPath === '/admin';
-    const token = isAdminPath ? localStorage.getItem("adminToken") : localStorage.getItem("memberToken");
-    
+    const isAdminPath = currentPath === "/admin";
+    const token = isAdminPath
+      ? localStorage.getItem("adminToken")
+      : localStorage.getItem("memberToken");
+
     if (!token) {
       alert("Authentication required. Please log in again.");
       return;
@@ -70,14 +74,14 @@ const Assign = () => {
     const updatedTask = { ...task, assignedTo: selectedUserId };
     fetch(`http://localhost:3000/api/tasks/${selectedTaskId}`, {
       method: "PUT",
-      headers: { 
+      headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         ...updatedTask,
         userId: currentUser?._id,
-        userName: currentUser?.name
+        userName: currentUser?.name,
       }),
     })
       .then((res) => {
@@ -97,11 +101,17 @@ const Assign = () => {
       });
   };
 
-  if (!currentUser || currentUser.role !== 'admin') {
+  if (!currentUser || currentUser.role !== "admin") {
     return (
       <div className="text-white mt-5 max-w-md mx-auto p-4 bg-gray-900 rounded-lg hover:shadow-lg hover:shadow-red-500/50">
-        <h1 className="text-3xl mb-5 flex items-center gap-2"><Frown size={40} className="text-red-500"/>Sorry, You Cannot access !</h1>
-        <p className="text-gray-400">You do not have permission to assign tasks. Only admin can access this feature.</p>
+        <h1 className="text-3xl mb-5 flex items-center gap-2">
+          <Frown size={40} className="text-red-500" />
+          Sorry, You Cannot access !
+        </h1>
+        <p className="text-gray-400">
+          You do not have permission to assign tasks. Only admin can access this
+          feature.
+        </p>
       </div>
     );
   }
@@ -110,7 +120,9 @@ const Assign = () => {
     <div className="text-white mt-5 max-w-md mx-auto p-4 bg-gray-900 rounded-lg">
       <h1 className="text-3xl mb-5">Assign Task to Member</h1>
       <div className="mb-4">
-        <label className="block mb-1" htmlFor="taskSelect">Select Task:</label>
+        <label className="block mb-1" htmlFor="taskSelect">
+          Select Task:
+        </label>
         <select
           id="taskSelect"
           value={selectedTaskId}
@@ -126,7 +138,9 @@ const Assign = () => {
         </select>
       </div>
       <div className="mb-4">
-        <label className="block mb-1" htmlFor="userSelect">Select Member:</label>
+        <label className="block mb-1" htmlFor="userSelect">
+          Select Member:
+        </label>
         <select
           id="userSelect"
           value={selectedUserId}
@@ -134,11 +148,13 @@ const Assign = () => {
           className="w-full p-2 rounded bg-gray-200 text-black"
         >
           <option value="">-- Select a Member --</option>
-          {users.filter(user => user.role !== 'admin').map((user) => (
-            <option key={user._id} value={user._id}>
-              {user.name}
-            </option>
-          ))}
+          {users
+            .filter((user) => user.role !== "admin")
+            .map((user) => (
+              <option key={user._id} value={user._id}>
+                {user.name}
+              </option>
+            ))}
         </select>
       </div>
       <button

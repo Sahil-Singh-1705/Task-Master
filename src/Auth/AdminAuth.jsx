@@ -34,11 +34,11 @@ const AdminAuth = ({ onLogin }) => {
       if (!response.ok) {
         setMessage(data.message || "Invalid credentials");
       } else {
-        if (data.role !== 'admin') {
+        if (data.role !== "admin") {
           setMessage("Access denied. Admin privileges required.");
           return;
         }
-        
+
         localStorage.setItem("adminToken", data.token);
         setMessage("Admin login successful!");
         if (onLogin) {
@@ -58,7 +58,11 @@ const AdminAuth = ({ onLogin }) => {
         Admin Login
       </h2>
       {message && (
-        <div className={`mb-4 ${message.includes('successful') ? 'text-green-400' : 'text-red-400'}`}>
+        <div
+          className={`mb-4 ${
+            message.includes("successful") ? "text-green-400" : "text-red-400"
+          }`}
+        >
           {message}
         </div>
       )}
@@ -80,9 +84,7 @@ const AdminAuth = ({ onLogin }) => {
           />
         </div>
         <div>
-          <label className="block mb-1">
-            Password : 
-          </label>
+          <label className="block mb-1">Password :</label>
           <input
             type="password"
             id="password"

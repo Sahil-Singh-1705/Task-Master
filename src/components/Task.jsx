@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ClipboardType } from 'lucide-react';
-
+import { ClipboardType } from "lucide-react";
 
 const statuses = ["To Do", "In Progress", "Done"];
 const priorities = ["Low", "Medium", "High"];
@@ -22,46 +21,48 @@ const Task = () => {
   useEffect(() => {
     const getToken = () => {
       const currentPath = window.location.pathname;
-      const isAdminPath = currentPath === '/admin';
-      return isAdminPath ? localStorage.getItem('adminToken') : localStorage.getItem('token');
+      const isAdminPath = currentPath === "/admin";
+      return isAdminPath
+        ? localStorage.getItem("adminToken")
+        : localStorage.getItem("token");
     };
 
     const token = getToken();
-    
+
     if (token) {
       fetch("http://localhost:3000/api/profile", {
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       })
-        .then(res => {
+        .then((res) => {
           if (!res.ok) {
             throw new Error(`HTTP error! status: ${res.status}`);
           }
           return res.json();
         })
-        .then(data => {
+        .then((data) => {
           console.log("User data:", data);
           setCurrentUser(data);
         })
-        .catch(err => {
+        .catch((err) => {
           console.error("Error fetching user profile:", err);
         });
     }
 
     fetch("http://localhost:3000/api/tasks", {
       headers: {
-        'Authorization': `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     })
-      .then(res => {
+      .then((res) => {
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
         }
         return res.json();
       })
-      .then(data => {
-        const formattedTasks = data.map(task => ({
+      .then((data) => {
+        const formattedTasks = data.map((task) => ({
           ...task,
           dueDate: new Date(task.dueDate).toISOString().split("T")[0],
           assignedTo: task.assignedTo ? task.assignedTo._id : "",
@@ -69,32 +70,32 @@ const Task = () => {
         }));
         setTasks(formattedTasks);
       })
-      .catch(err => {
+      .catch((err) => {
         console.error("Error fetching tasks:", err);
       });
 
     fetch("http://localhost:3000/api/users", {
       headers: {
-        'Authorization': `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     })
-      .then(res => {
+      .then((res) => {
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
         }
         return res.json();
       })
-      .then(data => {
+      .then((data) => {
         setUsers(data);
       })
-      .catch(err => {
+      .catch((err) => {
         console.error("Error fetching users:", err);
       });
   }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e) => {
@@ -106,44 +107,50 @@ const Task = () => {
 
     const getToken = () => {
       const currentPath = window.location.pathname;
-      const isAdminPath = currentPath === '/admin';
-      return isAdminPath ? localStorage.getItem('adminToken') : localStorage.getItem('token');
+      const isAdminPath = currentPath === "/admin";
+      return isAdminPath
+        ? localStorage.getItem("adminToken")
+        : localStorage.getItem("token");
     };
     const token = getToken();
-    
+
     fetch("http://localhost:3000/api/profile", {
       headers: {
-        'Authorization': `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     })
-      .then(res => res.json())
-      .then(userData => {
+      .then((res) => res.json())
+      .then((userData) => {
         const taskData = {
           ...form,
           userId: userData._id,
-          userName: userData.name
+          userName: userData.name,
         };
 
         if (editIndex === -1) {
           return fetch("http://localhost:3000/api/tasks", {
             method: "POST",
-            headers: { 
+            headers: {
               "Content-Type": "application/json",
-              'Authorization': `Bearer ${token}`
+              Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify(taskData)
+            body: JSON.stringify(taskData),
           })
-            .then(res => {
+            .then((res) => {
               if (!res.ok) {
                 throw new Error("Failed to add task");
               }
               return res.json();
             })
-            .then(newTask => {
-              newTask.dueDate = new Date(newTask.dueDate).toISOString().split("T")[0];
+            .then((newTask) => {
+              newTask.dueDate = new Date(newTask.dueDate)
+                .toISOString()
+                .split("T")[0];
               newTask.assignedTo = form.assignedTo;
-              newTask.assignedToName = users.find(u => u._id === form.assignedTo)?.name || "Unassigned";
-              setTasks(prev => [...prev, newTask]);
+              newTask.assignedToName =
+                users.find((u) => u._id === form.assignedTo)?.name ||
+                "Unassigned";
+              setTasks((prev) => [...prev, newTask]);
               setForm({
                 title: "",
                 description: "",
@@ -157,23 +164,31 @@ const Task = () => {
           const taskToUpdate = tasks[editIndex];
           return fetch(`http://localhost:3000/api/tasks/${taskToUpdate._id}`, {
             method: "PUT",
-            headers: { 
+            headers: {
               "Content-Type": "application/json",
-              'Authorization': `Bearer ${token}`
+              Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify(taskData)
+            body: JSON.stringify(taskData),
           })
-            .then(res => {
+            .then((res) => {
               if (!res.ok) {
                 throw new Error("Failed to update task");
               }
               return res.json();
             })
-            .then(updatedTask => {
-              updatedTask.dueDate = new Date(updatedTask.dueDate).toISOString().split("T")[0];
+            .then((updatedTask) => {
+              updatedTask.dueDate = new Date(updatedTask.dueDate)
+                .toISOString()
+                .split("T")[0];
               updatedTask.assignedTo = form.assignedTo;
-              updatedTask.assignedToName = users.find(u => u._id === form.assignedTo)?.name || "Unassigned";
-              setTasks(prev => prev.map((task, idx) => idx === editIndex ? updatedTask : task));
+              updatedTask.assignedToName =
+                users.find((u) => u._id === form.assignedTo)?.name ||
+                "Unassigned";
+              setTasks((prev) =>
+                prev.map((task, idx) =>
+                  idx === editIndex ? updatedTask : task
+                )
+              );
               setEditIndex(-1);
               setForm({
                 title: "",
@@ -186,7 +201,7 @@ const Task = () => {
             });
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err);
         alert("Error processing task");
       });
@@ -202,37 +217,39 @@ const Task = () => {
     if (window.confirm("Are you sure you want to delete this task?")) {
       const getToken = () => {
         const currentPath = window.location.pathname;
-        const isAdminPath = currentPath === '/admin';
-        return isAdminPath ? localStorage.getItem('adminToken') : localStorage.getItem('token');
+        const isAdminPath = currentPath === "/admin";
+        return isAdminPath
+          ? localStorage.getItem("adminToken")
+          : localStorage.getItem("token");
       };
       const token = getToken();
-      
+
       fetch("http://localhost:3000/api/profile", {
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       })
-        .then(res => res.json())
-        .then(userData => {
+        .then((res) => res.json())
+        .then((userData) => {
           const deleteData = {
             userId: userData._id,
-            userName: userData.name
+            userName: userData.name,
           };
-          
+
           return fetch(`http://localhost:3000/api/tasks/${taskToDelete._id}`, {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(deleteData)
+            body: JSON.stringify(deleteData),
           });
         })
-        .then(res => {
+        .then((res) => {
           if (!res.ok) {
             throw new Error("Failed to delete task");
           }
           return res.json();
         })
         .then(() => {
-          setTasks(prev => prev.filter((_, idx) => idx !== index));
+          setTasks((prev) => prev.filter((_, idx) => idx !== index));
           if (editIndex === index) {
             setForm({
               title: "",
@@ -245,7 +262,7 @@ const Task = () => {
             setEditIndex(-1);
           }
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err);
           alert("Error deleting task");
         });
@@ -260,43 +277,45 @@ const Task = () => {
     e.preventDefault();
     const taskId = e.dataTransfer.getData("taskId");
     const task = tasks.find((t) => t._id === taskId);
-    
+
     if (task && task.status !== newStatus) {
       const currentPath = window.location.pathname;
-      const isAdminPath = currentPath === '/admin';
-      const token = isAdminPath ? localStorage.getItem("adminToken") : localStorage.getItem("memberToken");
-      
+      const isAdminPath = currentPath === "/admin";
+      const token = isAdminPath
+        ? localStorage.getItem("adminToken")
+        : localStorage.getItem("memberToken");
+
       if (!token) {
         alert("Authentication required. Please log in again.");
         return;
       }
-      
+
       fetch("http://localhost:3000/api/profile", {
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       })
-        .then(res => {
+        .then((res) => {
           if (!res.ok) {
             throw new Error("Failed to authenticate");
           }
           return res.json();
         })
-        .then(userData => {
-          const updatedTask = { 
-            ...task, 
+        .then((userData) => {
+          const updatedTask = {
+            ...task,
             status: newStatus,
             userId: userData._id,
-            userName: userData.name
+            userName: userData.name,
           };
-          
+
           return fetch(`http://localhost:3000/api/tasks/${taskId}`, {
             method: "PUT",
-            headers: { 
+            headers: {
               "Content-Type": "application/json",
-              'Authorization': `Bearer ${token}`
+              Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify(updatedTask)
+            body: JSON.stringify(updatedTask),
           });
         })
         .then((res) => {
@@ -306,9 +325,7 @@ const Task = () => {
           return res.json();
         })
         .then((data) => {
-          setTasks((prev) =>
-            prev.map((t) => (t._id === taskId ? data : t))
-          );
+          setTasks((prev) => prev.map((t) => (t._id === taskId ? data : t)));
         })
         .catch((err) => {
           console.error("Error updating task status:", err);
@@ -329,103 +346,117 @@ const Task = () => {
   return (
     <div className="text-white">
       <h1 className="text-4xl mb-5 font-semibold">Task Management</h1>
-      
-      {currentUser && currentUser.role && currentUser.role.toLowerCase() === 'admin' && (
-        <form
-          onSubmit={handleSubmit}
-          className="mb-8 space-y-4 max-w-md shadow-lg shadow-gray-500/50 bg-gray-950 p-6 rounded-lg"
-        >
-          <div>
-            <div className="flex justify-center">
-            <ClipboardType size={55} className="mb-5 text-red-500"/>
-            </div>
-            <label className="block mb-1 text-lg font-medium" htmlFor="title">
-              Title :
-            </label>
-            <input
-              id="title"
-              name="title"
-              type="text"
-              placeholder="Enter the task title"
-              value={form.title}
-              onChange={handleChange}
-              className="w-full p-2 rounded text-black bg-gray-200 outline-red-500 focus:outline-3"
-              required
-            />
-          </div>
-          <div>
-            <label className="block mb-1 text-lg font-medium" htmlFor="description">
-              Description :
-            </label>
-            <textarea
-              id="description"
-              name="description"
-              placeholder="Enter the task description..."
-              value={form.description}
-              onChange={handleChange}
-              className="w-full p-2 rounded text-black bg-gray-200 outline-red-500 focus:outline-3"
-              required
-            />
-          </div>
-          <div>
-            <label className="block mb-1 text-lg font-medium" htmlFor="dueDate">
-              Due Date :
-            </label>
-            <input
-              id="dueDate"
-              name="dueDate"
-              type="date"
-              value={form.dueDate}
-              onChange={handleChange}
-              className="w-full p-2 rounded text-black bg-gray-200 outline-red-500 focus:outline-3"
-              required
-            />
-          </div>
-          <div>
-            <label className="block mb-1 text-lg font-medium" htmlFor="priority">
-              Priority :
-            </label>
-            <select
-              id="priority"
-              name="priority"
-              value={form.priority}
-              onChange={handleChange}
-              className="w-full p-2 rounded text-black bg-gray-200 outline-red-500 focus:outline-3"
-            >
-              {priorities.map((p) => (
-                <option key={p} value={p}>
-                  {p}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block mb-1 text-lg font-medium" htmlFor="assignedTo">
-              Assign To :
-            </label>
-            <select
-              id="assignedTo"
-              name="assignedTo"
-              value={form.assignedTo}
-              onChange={handleChange}
-              className="w-full p-2 rounded text-black bg-gray-200 outline-red-500 focus:outline-3"
-            >
-              <option value="">Unassigned</option>
-              {users.map((user) => (
-                <option key={user._id} value={user._id}>
-                  {user.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <button
-            type="submit"
-            className="bg-red-600 hover:bg-red-700 text-xl px-4 py-2 rounded font-semibold w-full mt-4 cursor-pointer transition active:scale-90"
+
+      {currentUser &&
+        currentUser.role &&
+        currentUser.role.toLowerCase() === "admin" && (
+          <form
+            onSubmit={handleSubmit}
+            className="mb-8 space-y-4 max-w-md shadow-lg shadow-gray-500/50 bg-gray-950 p-6 rounded-lg"
           >
-            {editIndex === -1 ? "Add Task" : "Update Task"}
-          </button>
-        </form>
-      )}
+            <div>
+              <div className="flex justify-center">
+                <ClipboardType size={55} className="mb-5 text-red-500" />
+              </div>
+              <label className="block mb-1 text-lg font-medium" htmlFor="title">
+                Title :
+              </label>
+              <input
+                id="title"
+                name="title"
+                type="text"
+                placeholder="Enter the task title"
+                value={form.title}
+                onChange={handleChange}
+                className="w-full p-2 rounded text-black bg-gray-200 outline-red-500 focus:outline-3"
+                required
+              />
+            </div>
+            <div>
+              <label
+                className="block mb-1 text-lg font-medium"
+                htmlFor="description"
+              >
+                Description :
+              </label>
+              <textarea
+                id="description"
+                name="description"
+                placeholder="Enter the task description..."
+                value={form.description}
+                onChange={handleChange}
+                className="w-full p-2 rounded text-black bg-gray-200 outline-red-500 focus:outline-3"
+                required
+              />
+            </div>
+            <div>
+              <label
+                className="block mb-1 text-lg font-medium"
+                htmlFor="dueDate"
+              >
+                Due Date :
+              </label>
+              <input
+                id="dueDate"
+                name="dueDate"
+                type="date"
+                value={form.dueDate}
+                onChange={handleChange}
+                className="w-full p-2 rounded text-black bg-gray-200 outline-red-500 focus:outline-3"
+                required
+              />
+            </div>
+            <div>
+              <label
+                className="block mb-1 text-lg font-medium"
+                htmlFor="priority"
+              >
+                Priority :
+              </label>
+              <select
+                id="priority"
+                name="priority"
+                value={form.priority}
+                onChange={handleChange}
+                className="w-full p-2 rounded text-black bg-gray-200 outline-red-500 focus:outline-3"
+              >
+                {priorities.map((p) => (
+                  <option key={p} value={p}>
+                    {p}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label
+                className="block mb-1 text-lg font-medium"
+                htmlFor="assignedTo"
+              >
+                Assign To :
+              </label>
+              <select
+                id="assignedTo"
+                name="assignedTo"
+                value={form.assignedTo}
+                onChange={handleChange}
+                className="w-full p-2 rounded text-black bg-gray-200 outline-red-500 focus:outline-3"
+              >
+                <option value="">Unassigned</option>
+                {users.map((user) => (
+                  <option key={user._id} value={user._id}>
+                    {user.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <button
+              type="submit"
+              className="bg-red-600 hover:bg-red-700 text-xl px-4 py-2 rounded font-semibold w-full mt-4 cursor-pointer transition active:scale-90"
+            >
+              {editIndex === -1 ? "Add Task" : "Update Task"}
+            </button>
+          </form>
+        )}
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {statuses.map((status) => (
@@ -447,26 +478,38 @@ const Task = () => {
                   <h3 className="text-xl font-semibold">{task.title}</h3>
                   <p className="text-gray-300">{task.description}</p>
                   <p className="text-gray-400 text-sm">Due: {task.dueDate}</p>
-                  <p className="text-gray-400 text-sm">Priority: {task.priority}</p>
+                  <p className="text-gray-400 text-sm">
+                    Priority: {task.priority}
+                  </p>
                   <p className="text-gray-400 text-sm">
                     Assigned To: {task.assignedToName || "Unassigned"}
                   </p>
-                  {currentUser && currentUser.role && currentUser.role.toLowerCase() === 'admin' && (
-                    <div className="space-x-2">
-                      <button
-                        onClick={() => handleEdit(tasks.findIndex(t => t._id === task._id))}
-                        className="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-white cursor-pointer transition active:scale-90"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(tasks.findIndex(t => t._id === task._id))}
-                        className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white cursor-pointer transition active:scale-90"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  )}
+                  {currentUser &&
+                    currentUser.role &&
+                    currentUser.role.toLowerCase() === "admin" && (
+                      <div className="space-x-2">
+                        <button
+                          onClick={() =>
+                            handleEdit(
+                              tasks.findIndex((t) => t._id === task._id)
+                            )
+                          }
+                          className="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-white cursor-pointer transition active:scale-90"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() =>
+                            handleDelete(
+                              tasks.findIndex((t) => t._id === task._id)
+                            )
+                          }
+                          className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white cursor-pointer transition active:scale-90"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    )}
                 </div>
               ))
             ) : (

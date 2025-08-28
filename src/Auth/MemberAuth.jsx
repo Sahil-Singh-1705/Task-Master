@@ -53,11 +53,11 @@ const MemberAuth = ({ onLogin }) => {
         }
       } else {
         if (isLogin) {
-          if (data.role === 'admin') {
+          if (data.role === "admin") {
             setMessage("Please use the admin login page for admin access.");
             return;
           }
-          
+
           localStorage.setItem("memberToken", data.token);
           setMessage("Login successful!");
           if (onLogin) {
@@ -82,7 +82,11 @@ const MemberAuth = ({ onLogin }) => {
         {isLogin ? "Member Login" : "Member Sign Up"}
       </h2>
       {message && (
-        <div className={`mb-4 ${message.includes('successful') ? 'text-green-400' : 'text-red-400'}`}>
+        <div
+          className={`mb-4 ${
+            message.includes("successful") ? "text-green-400" : "text-red-400"
+          }`}
+        >
           {message}
         </div>
       )}
@@ -122,9 +126,7 @@ const MemberAuth = ({ onLogin }) => {
           />
         </div>
         <div>
-          <label className="block mb-1">
-            Password : 
-          </label>
+          <label className="block mb-1">Password :</label>
           <input
             type="password"
             id="password"
